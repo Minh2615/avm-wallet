@@ -9,7 +9,18 @@ if( ! class_exists( 'EVM_WALLET_HOOK' ) ) {
 
 		protected function __construct() {
 			add_action( 'init', array( $this, 'register_post_type' ) );
-			add_action( 'admin_enqueue_scripts', array( $this, 'add_admin_scripts' ) );
+			add_action( 'template_include', array( $this, 'template_includes' ), 1000 );
+		}
+
+		/**
+		 * Check is page setting.
+		 *
+		 * @return bool
+		 */
+		public function is_page_setting_wallet(): bool {
+			global $wp;
+
+			return isset( $wp->query_vars ) && array_key_exists( 'wallet-setting', $wp->query_vars );
 		}
 
 		public function register_post_type(){
@@ -51,17 +62,108 @@ if( ! class_exists( 'EVM_WALLET_HOOK' ) ) {
 
 		}
 
-		public function add_admin_scripts() {
-			// $v = rand();
-			// // wp_enqueue_style( 'kiot-admin-config', THIM_TREE_URL . 'asset/admin/css/config.css', array(), '1.0.0' );
-			// wp_enqueue_script( 'gia-pha-admin-config', THIM_TREE_URL . 'assets/js/config.js', array( 'jquery', 'wp-api-fetch', 'wp-url' ), $v, true );
-			// wp_localize_script(
-			// 	'gia-pha-admin-config',
-			// 	'mo_localize_script',
-			// 	array(
-			// 		'ajaxurl' => admin_url( 'admin-ajax.php' ),
-			// 	)
-			// );
+		/**
+		 * It removes all actions from `wp_head` and `wp_footer` and then adds back only the ones we want
+		 */
+		public function setup_the_scripts() {
+			add_filter( 'show_admin_bar', '__return_false' );
+
+			remove_all_actions( 'wp_head' );
+			remove_all_actions( 'wp_print_styles' );
+			remove_all_actions( 'wp_print_head_scripts' );
+			remove_all_actions( 'wp_footer' );
+
+			// Handle `wp_head`
+			add_action( 'wp_head', 'wp_enqueue_scripts', 1 );
+			add_action( 'wp_head', 'wp_print_styles', 8 );
+			add_action( 'wp_head', 'wp_print_head_scripts', 9 );
+			add_action( 'wp_head', 'wp_site_icon' );
+
+			// Handle `wp_footer`
+			add_action( 'wp_footer', 'wp_print_footer_scripts', 20 );
+
+			// Handle `wp_enqueue_scripts`
+			remove_all_actions( 'wp_enqueue_scripts' );
+
+			// Also remove all scripts hooked into after_wp_tiny_mce.
+			remove_all_actions( 'after_wp_tiny_mce' );
+
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 999999 );
+
+			do_action( 'learnpress/live-addon/init' );
+		}
+
+		/**
+		 * Get link show live setting.
+		 *
+		 * @return string
+		 */
+		public function get_slug_page(): string {
+			return apply_filters( 'evm_wallet_setting_get_slug', 'wallet-setting' );
+		}
+
+		/**
+		 * Get link show live setting.
+		 *
+		 * @return string
+		 */
+		public function url_page_setting(): string {
+			return trailingslashit( site_url( $this->get_slug_page() ) );
+		}
+
+		public function enqueue_scripts() {
+			$v_rand = uniqid();
+			if ( ! is_user_logged_in() ) {
+				return;
+			}
+	
+			$user = learn_press_get_current_user();
+			$info = include LP_ADDON_LIVE_PLUGIN_PATH . '/build/evm-wallet.asset.php';
+			wp_enqueue_style( 'avm-wallet-setting', LP_ADDON_LIVE_PLUGIN_URL . '/build/evm-wallet.css', array(), $info['version'], false );
+			wp_enqueue_script( 'avm-wallet-setting', LP_ADDON_LIVE_PLUGIN_URL . '/build/evm-wallet.js', $info['dependencies'], $info['version'], true );
+	
+			wp_localize_script(
+				'avm-wallet-setting',
+				'evm_wallet_setting',
+				apply_filters(
+					'evm_wallet_setting_localize_script',
+					array(
+						'page_slug'      => $this->get_slug_page(),
+						'site_url'       => home_url( '/' ),
+						'admin_url'      => admin_url(),
+						'logout_url'     => wp_logout_url( home_url() ),
+						'is_admin'       => current_user_can( 'manage_options' ),
+						'nonce'          => wp_create_nonce( 'wp_rest' ),
+						'page_settings'  => $this->url_page_setting(),
+					)
+				)
+			);
+	
+			do_action( 'evm_wallet/enqueue_scripts' );
+		}
+		
+		public function template_includes( $template ) {
+
+			if ( $this->is_page_setting_wallet() ) {
+				if ( is_user_logged_in() ) {
+	
+					$this->setup_the_scripts();
+	
+					wp_head();
+					?>
+	
+					<div id="evm-wallet-setting-root"></div>
+	
+					<?php
+					wp_footer();
+					return;
+				} else {
+					wp_redirect( home_url() );
+					exit();
+				}
+			}
+
+			return $template;
 		}
 
 		public static function instance(): EVM_WALLET_HOOK {
