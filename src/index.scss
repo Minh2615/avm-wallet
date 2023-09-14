@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+// WordPress screen only.
+.screen-reader-text {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	-webkit-clip-path: inset(50%);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	overflow-wrap: normal !important;
+	word-wrap: normal !important;
+	padding: 0;
+	position: absolute !important;
+	width: 1px;
+}
+
+
+.lp-skeleton-animation {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	width: 100%;
+
+	li {
+		width: 100%;
+		height: 30px;
+		margin-top: 15px;
+		border-radius: 0;
+		background: linear-gradient(90deg, hsla(0deg, 0%, 74.5%, 0.2) 25%, hsla(0deg, 0%, 50.6%, 0.24) 37%, hsla(0deg, 0%, 74.5%, 0.2) 63%);
+		background-size: 400% 100%;
+		list-style: none;
+		animation: lp-skeleton-loading 1.4s ease infinite;
+	}
+}
+
+@keyframes lp-skeleton-loading {
+
+	0% {
+		background-position: 100% 50%;
+	}
+
+	to {
+		background-position: 0 50%;
+	}
+}
+
+.hide-focus-input {
+
+	input {
+
+		&:focus {
+			box-shadow: none;
+		}
+	}
+
+	textarea {
+
+		&:focus {
+			box-shadow: none;
+		}
+	}
+}
+
+.hight-z-index {
+
+	label {
+		z-index: 0;
+	}
+}
+
+.end-date-schedule {
+
+	&.flex-row {
+		flex-direction: row !important;
+	}
+}
+
+.enable-schedule {
+
+	fieldset {
+		margin-bottom: 0;
+	}
+}
+
+.day-of-week {
+
+	fieldset {
+		margin-left: 0;
+		margin-top: 5px;
+		margin-bottom: 10px;
+	}
+}

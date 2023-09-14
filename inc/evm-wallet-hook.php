@@ -10,6 +10,53 @@ if( ! class_exists( 'EVM_WALLET_HOOK' ) ) {
 		protected function __construct() {
 			add_action( 'init', array( $this, 'register_post_type' ) );
 			add_action( 'template_include', array( $this, 'template_includes' ), 1000 );
+			add_action( 'admin_bar_menu', array( $this, 'add_admin_menu' ), 80 );
+			add_action( 'init', array( $this, 'add_rewrite_rules' ) );
+		}
+		
+		public function add_rewrite_rules() {
+			$root_slug = 'wallet-setting';
+
+			add_rewrite_rule(
+				'^wallet-setting/?$',
+				'index.php?wallet-setting=$matches[1]',
+				'top'
+			);
+
+			add_rewrite_rule(
+				'^' . $root_slug . '/(currencys)/?(.*)?',
+				'index.php?wallet-setting=1',
+				'top'
+			);
+			add_rewrite_rule(
+				'^' . $root_slug . '/(settings)/?(.*)?',
+				'index.php?wallet-setting=1',
+				'top'
+			);
+			
+			add_rewrite_tag( '%wallet-setting%', '([^&]+)' );
+
+			flush_rewrite_rules();
+
+		}
+
+		public function add_admin_menu( $wp_admin_bar ) {
+			if ( ! $this->can_view_wallet_setting() ) {
+				return;
+			}
+	
+			$title = esc_html__( 'Wallets Settings', 'evm-wallet' );
+			$href  = $this->url_page_setting();
+	
+			$wp_admin_bar->add_node(
+				array(
+					'id'    => 'evm-wallet-setting',
+					'title' => '
+						<img style="width: 20px; height: 20px; padding: 0; line-height: 1.84615384; vertical-align: middle; margin: -6px 0 0 0;" src="https://images-platform.99static.com//rAlXbfALSpg8LkFFzli61yIkUYY=/183x19:1320x1156/fit-in/500x500/99designs-contests-attachments/93/93346/attachment_93346584">
+						<span class="ab-label">' . $title . '</span>',
+					'href'  => $href,
+				)
+			);
 		}
 
 		/**
@@ -25,21 +72,21 @@ if( ! class_exists( 'EVM_WALLET_HOOK' ) ) {
 
 		public function register_post_type(){
 			$labels = array(
-				'name'                  => _x( 'Balance', 'Post type general name', 'evm-tracking' ),
-				'singular_name'         => _x( 'Balance', 'Post type singular name', 'evm-tracking' ),
-				'menu_name'             => _x( 'Balance', 'Admin Menu text', 'evm-tracking' ),
-				'name_admin_bar'        => _x( 'Balance', 'Add New on Toolbar', 'evm-tracking' ),
-				'add_new'               => __( 'Add New', 'evm-tracking' ),
-				'add_new_item'          => __( 'Add New Balance', 'evm-tracking' ),
-				'new_item'              => __( 'New Balance', 'evm-tracking' ),
-				'edit_item'             => __( 'Edit Balance', 'evm-tracking' ),
-				'view_item'             => __( 'View Balance', 'evm-tracking' ),
-				'all_items'             => __( 'All Balance', 'evm-tracking' ),
-				'search_items'          => __( 'Search Balance', 'evm-tracking' ),
-				'parent_item_colon'     => __( 'Parent Balance:', 'evm-tracking' ),
-				'not_found'             => __( 'No Balance found.', 'evm-tracking' ),
-				'not_found_in_trash'    => __( 'No Balance found in Trash.', 'evm-tracking' ),
-				'archives'              => _x( 'Balance archives', 'The post type archive label used in nav menus. Default “Post Archives”. Added in 4.4', 'evm-tracking' ),
+				'name'                  => _x( 'Balance', 'Post type general name', 'evm-wallet' ),
+				'singular_name'         => _x( 'Balance', 'Post type singular name', 'evm-wallet' ),
+				'menu_name'             => _x( 'Balance', 'Admin Menu text', 'evm-wallet' ),
+				'name_admin_bar'        => _x( 'Balance', 'Add New on Toolbar', 'evm-wallet' ),
+				'add_new'               => __( 'Add New', 'evm-wallet' ),
+				'add_new_item'          => __( 'Add New Balance', 'evm-wallet' ),
+				'new_item'              => __( 'New Balance', 'evm-wallet' ),
+				'edit_item'             => __( 'Edit Balance', 'evm-wallet' ),
+				'view_item'             => __( 'View Balance', 'evm-wallet' ),
+				'all_items'             => __( 'All Balance', 'evm-wallet' ),
+				'search_items'          => __( 'Search Balance', 'evm-wallet' ),
+				'parent_item_colon'     => __( 'Parent Balance:', 'evm-wallet' ),
+				'not_found'             => __( 'No Balance found.', 'evm-wallet' ),
+				'not_found_in_trash'    => __( 'No Balance found in Trash.', 'evm-wallet' ),
+				'archives'              => _x( 'Balance archives', 'The post type archive label used in nav menus. Default “Post Archives”. Added in 4.4', 'evm-wallet' ),
 			);
 		
 			$args = array(
@@ -117,10 +164,9 @@ if( ! class_exists( 'EVM_WALLET_HOOK' ) ) {
 				return;
 			}
 	
-			$user = learn_press_get_current_user();
-			$info = include LP_ADDON_LIVE_PLUGIN_PATH . '/build/evm-wallet.asset.php';
-			wp_enqueue_style( 'avm-wallet-setting', LP_ADDON_LIVE_PLUGIN_URL . '/build/evm-wallet.css', array(), $info['version'], false );
-			wp_enqueue_script( 'avm-wallet-setting', LP_ADDON_LIVE_PLUGIN_URL . '/build/evm-wallet.js', $info['dependencies'], $info['version'], true );
+			$info = include EVM_WALLET_PLUGIN_PATH . '/build/evm-wallet.asset.php';
+			wp_enqueue_style( 'avm-wallet-setting', EVM_WALLET_URL . '/build/evm-wallet.css', array(), $info['version'], false );
+			wp_enqueue_script( 'avm-wallet-setting', EVM_WALLET_URL . '/build/evm-wallet.js', $info['dependencies'], $info['version'], true );
 	
 			wp_localize_script(
 				'avm-wallet-setting',
@@ -164,6 +210,10 @@ if( ! class_exists( 'EVM_WALLET_HOOK' ) ) {
 			}
 
 			return $template;
+		}
+
+		public function can_view_wallet_setting() {
+			return is_user_logged_in() && current_user_can( 'manage_options' );
 		}
 
 		public static function instance(): EVM_WALLET_HOOK {

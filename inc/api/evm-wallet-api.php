@@ -2,13 +2,13 @@
 defined( 'ABSPATH' ) || exit();
 
 
-class LearnPress_Google_Setting_Api {
+class Evm_Wallet_Api {
 
 	private static $instance;
 	/**
 	 * @var string
 	 */
-	public $namespace = 'lp/google/v1';
+	public $namespace = 'evm-wallet/v1';
 
 	/**
 	 * @var string
@@ -28,112 +28,98 @@ class LearnPress_Google_Setting_Api {
 	}
 
 	public function register_routes() {
-
 		register_rest_route(
 			$this->namespace,
-			'save-config-connect',
-			array(
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'save_config_connect' ),
-				'permission_callback' => function() {
-					return $this->is_instructor();
-				},
-			)
-		);
-		register_rest_route(
-			$this->namespace,
-			'get-config-connect',
+			'currencys/get',
 			array(
 				'methods'             => 'GET',
-				'callback'            => array( $this, 'get_config_connect' ),
-				'permission_callback' => function() {
-					return $this->is_instructor();
-				},
+				'callback'            => array( $this, 'get_list_currency' ),
+				'permission_callback' => '__return_true'
 			)
 		);
 
 		register_rest_route(
 			$this->namespace,
-			'authenticate',
-			array(
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'authenticate' ),
-				'permission_callback' => function() {
-					return $this->is_instructor();
-				},
-			)
-		);
-
-		// customize meetings
-		register_rest_route(
-			$this->namespace,
-			'get-all-events',
+			'currencys/get/(?P<curency_id>\S+)',
 			array(
 				'methods'             => 'GET',
-				'callback'            => array( $this, 'get_all_events' ),
-				'permission_callback' => function() {
-					return $this->is_instructor();
-				},
-			)
-		);
-		register_rest_route(
-			$this->namespace,
-			'meetings/get',
-			array(
-				'methods'             => 'GET',
-				'callback'            => array( $this, 'get_meeting' ),
-				'permission_callback' => function() {
-					return $this->is_instructor();
-				},
-			)
-		);
-		register_rest_route(
-			$this->namespace,
-			'meetings/create-or-update',
-			array(
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'create_or_update_meeting' ),
-				'permission_callback' => function() {
-					return $this->is_instructor();
-				},
-			)
-		);
-		register_rest_route(
-			$this->namespace,
-			'meetings/delete/(?P<meeting_id>\S+)',
-			array(
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'delete_meeting' ),
-				'permission_callback' => function() {
-					return $this->is_instructor();
-				},
+				'callback'            => array( $this, 'detail_currency' ),
+				'permission_callback' => '__return_true'
 			)
 		);
 
-		//end custom meetings
 	}
 
-	public function save_config_connect( WP_REST_Request $request ) {
+	public function get_list_currency( WP_REST_Request $request ) {
+		$response       = new stdClass();
+		$response->data = array();
+        try {
+			$args_query = array(
+				'post_type' => 'evm-balanace',
+				'posts_per_page' => -1,
+                'post_status' => 'publish',
+                'orderby' => 'date',
+                'order' => 'DESC',
+			);
+			$the_query = new WP_Query( $args_query );
+
+			if ( $the_query->have_posts() ) {
+				while ( $the_query->have_posts() ) {
+                    $the_query->the_post();
+                    $response->data[] = array(
+                        'id'     => get_the_ID(),
+                        'title'  => get_the_title(),
+						'sub_title' => get_post_meta(get_the_ID(), 'sub_title', true) ?: get_the_title(),
+                        'amount' => get_post_meta(get_the_ID(), 'evm_amount', true) ?: 0,
+						'price_amount' => get_post_meta(get_the_ID(), 'evm_price_amount', true) ?: 0,
+                        'image'  => get_the_post_thumbnail_url( get_the_ID(), 'full' ),
+                    );
+                }
+            } else {
+				$response->status = 'error';
+				$response->message = 'No data';
+			}
+
+			wp_reset_postdata();
+			$response->status ='success';
+
+		} catch ( Exception $e ) {
+			$response->status  = 'error';
+			$response->message = $e->getMessage();
+		}
+
+		return rest_ensure_response( $response );
+	}
+
+	public function detail_currency( WP_REST_Request $request ) {
 		$params           = $request->get_params();
 		$response         = new stdClass();
 		$response->status = 'success';
 
-		$client_id     = $params['client_id'] ?? '';
-		$client_secret = $params['client_secret'] ?? '';
+		$user_id     = $params['user_id'] ?? '';
 
 		try {
 
-			if ( empty( $client_id ) || empty( $client_secret ) ) {
-				throw new Exception( 'Client ID or Client Secret is empty.' );
+			if ( empty( $user_id ) ) {
+				throw new Exception( __( 'User ID is required!', 'portal-lbh' ) );
 			}
 
-			$user      = learn_press_get_current_user();
-			$user_meta = array(
-				'client_id'     => $client_id,
-				'client_secret' => $client_secret,
-			);
+			$user = get_user_by( 'id', $user_id );
+				
+			if ( empty( $user ) ) {
+                throw new Exception( __( 'User not found!', 'portal-lbh' ) );
+            }
 
-			update_user_meta( $user->get_id(), '_lp_google_connect', $user_meta );
+			$data = array(
+				'id'          => $user->ID,
+                'email'       => $user->user_email,
+                'name'        => $user->display_name,
+                'role'        => $user->roles,
+				'url'         => get_author_posts_url( $user->ID ),
+				'user_intro'  => get_user_meta( $user->ID, 'user_intro', true ),
+            );
+
+			$response->data = $data;
 
 		} catch ( Exception $e ) {
 			$response->status  = 'error';
@@ -143,148 +129,6 @@ class LearnPress_Google_Setting_Api {
 		return rest_ensure_response( $response );
 	}
 
-	public function authenticate( WP_REST_Request $request ) {
-		$response = new stdClass();
-		$params   = $request->get_params();
-
-		$client_id     = $params['client_id'] ?? '';
-		$client_secret = $params['client_secret'] ?? '';
-		$client_code   = $params['client_code'] ?? '';
-
-		try {
-
-			$user          = learn_press_get_current_user();
-			$user_settings = get_user_meta( $user->get_id(), '_lp_google_connect', true );
-			//use in re-authenticate
-			if ( ! empty( $user_settings ) ) {
-				if ( empty( $client_id ) ) {
-					$client_id = $user_settings['client_id'];
-				}
-				if ( empty( $client_secret ) ) {
-					$client_secret = $user_settings['client_secret'];
-				}
-			}
-
-			if ( empty( $client_code ) || empty( $client_id ) || empty( $client_secret ) ) {
-				throw new Exception( __( 'Please do not leave any fields blank.', 'learnpress-live' ) );
-			}
-
-			$token = LP_Google_Auth::instance()->generateAccessToken( $client_id, $client_secret, $client_code );
-
-			if ( is_wp_error( $token ) ) {
-				$response->status  = 'error';
-				$response->message = $token->get_error_message();
-			} else {
-				//update option
-				$user_meta = array(
-					'client_id'     => $client_id,
-					'client_secret' => $client_secret,
-					'client_code'   => $client_code,
-				);
-
-				update_user_meta( $user->get_id(), '_lp_google_connect', $user_meta );
-				update_user_meta( $user->get_id(), '_lp_google_token', $token );
-				update_user_meta( $user->get_id(), '_lp_refresh_token', $token->refresh_token );//using for re-authenticate
-
-				$response->status  = 'success';
-				$response->message = 'Save config connect success.';
-			}
-		} catch ( Exception $e ) {
-			$response->status  = 'error';
-			$response->message = $e->getMessage();
-		}
-		return rest_ensure_response( $response );
-	}
-
-	public function get_config_connect( WP_REST_Request $request ) {
-		$response = new stdClass();
-
-		$user      = learn_press_get_current_user();
-		$meta_data = get_user_meta( $user->get_id(), '_lp_google_connect', true );
-		$token     = get_user_meta( $user->get_id(), '_lp_google_token', true );
-
-		if ( ! empty( $meta_data ) ) {
-			$response->data = $meta_data;
-			if ( ! empty( $token->access_token ) ) {
-				$response->authenticated = true;
-			} else {
-				$response->authenticated = false;
-			}
-		} else {
-			$response->data = array();
-		}
-
-		return rest_ensure_response( $response );
-	}
-
-	public function get_all_events( WP_REST_Request $request ) {
-		$response         = new stdClass();
-		$response->status = 'success';
-
-		$user       = learn_press_get_current_user();
-		$data_token = get_user_meta( $user->get_id(), '_lp_google_token', true );
-
-		try {
-			if ( empty( $data_token ) ) {
-				throw new Exception( __( 'Please connect to Google Meet.', 'learnpress-live' ) );
-			}
-
-			$body        = array();
-			$request_url = 'https://www.googleapis.com/calendar/v3/calendars/primary/events';
-			$auth        = 'Bearer ' . $data_token->access_token;
-			$results     = LP_Google_Auth::instance()->learnpress_google_requests( $body, 'GET', $auth, $request_url );
-
-			if ( isset( $results['code'] ) && $results['code'] == 200 ) {
-				$response->data = $results['body'];
-				if ( empty( $results['body']->items ) ) {
-					$response->message = __( 'No meeting found!', 'learnpress-live' );
-					$response->status  = 'error';
-				}
-			} else {
-				$response->message = $results['error'] ?? __( 'Error meetings!', 'learnpress-live' );
-				$response->status  = 'error';
-			}
-		} catch ( Exception $e ) {
-			$response->status  = 'error';
-			$response->message = $e->getMessage();
-		}
-
-		return rest_ensure_response( $response );
-	}
-
-	public function get_meeting( WP_REST_Request $request ) {
-		$response         = new stdClass();
-		$response->status = 'success';
-
-		$user       = learn_press_get_current_user();
-		$data_token = get_user_meta( $user->get_id(), '_lp_google_token', true );
-
-		try {
-			if ( empty( $data_token ) ) {
-				throw new Exception( __( 'Please connect to Google Meet.', 'learnpress-live' ) );
-			}
-
-			$params = $request->get_params();
-			$id     = $params['ID'] ?: '';
-			$body   = array();
-
-			$request_url = 'https://www.googleapis.com/calendar/v3/calendars/primary/events/' . $id;
-			$auth        = 'Bearer ' . $data_token->access_token;
-			$results     = LP_Google_Auth::instance()->learnpress_google_requests( $body, 'GET', $auth, $request_url );
-
-			if ( isset( $results['code'] ) && $results['code'] == 200 ) {
-				$response->data = $results['body'];
-			} else {
-				$response->message = $results['error'] ?? __( 'Error meetings!', 'learnpress-live' );
-				$response->status  = 'error';
-			}
-		} catch ( Exception $e ) {
-			$response->status  = 'error';
-			$response->message = $e->getMessage();
-		}
-
-		return rest_ensure_response( $response );
-	}
 
 }
-LearnPress_Google_Setting_Api::instance();
+Evm_Wallet_Api::instance();
