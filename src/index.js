@@ -5,6 +5,7 @@ import SideBar from './components/sidebar';
 // wallet
 import ListCurrencys from './components/currency';
 import DetailCurrency from './components/currency/detail';
+import CreateCurrencys from './components/currency/create';
 import classnames from 'classnames';
 
 function Index() {
@@ -29,6 +30,10 @@ function Index() {
                                     <Route
                                         path={`/${evm_wallet_setting?.page_slug}/currencys`}
                                         element={<ListCurrencys />}
+                                    />
+                                    <Route
+                                        path={`/${evm_wallet_setting?.page_slug}/currencys/create`}
+                                        element={<CreateCurrencys />}
                                     />
                                     <Route
                                         path={`/${evm_wallet_setting?.page_slug}/currencys/edit/:currencyID`}

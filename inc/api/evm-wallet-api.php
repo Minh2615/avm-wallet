@@ -37,6 +37,15 @@ class Evm_Wallet_Api {
 				'permission_callback' => '__return_true'
 			)
 		);
+		register_rest_route(
+			$this->namespace,
+			'currencys/create',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'create_currency' ),
+				'permission_callback' => '__return_true'
+			)
+		);
 
 		register_rest_route(
 			$this->namespace,
@@ -47,6 +56,20 @@ class Evm_Wallet_Api {
 				'permission_callback' => '__return_true'
 			)
 		);
+
+	}
+
+	public function create_currency( WP_REST_Request $request ){
+		$params           = $request->get_params();
+		$response         = new stdClass();
+		$response->status = 'success';
+		if ( !function_exists('media_handle_upload') ) {
+			require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+			require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+			require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+		}
+		$image = media_handle_upload($params['image'], 0);
+		print_R($image);die;
 
 	}
 

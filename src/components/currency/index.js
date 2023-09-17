@@ -47,8 +47,6 @@ export default function ListCurrencys() {
         apiFetch( { path: url } )
     );
 
-    console.log(data);
-
     const isLoading = ! data;
 
     useEffect( () => {
@@ -104,14 +102,19 @@ export default function ListCurrencys() {
 					{ __( 'Manage Currency' ) }
 				</div>
 				<div className="flex items-csenter gap-x-3">
-                    <button
-						className="ring-1 ring-black ring-opacity-5 bg-indigo-600 text-white text-sm px-4 py-2 flex items-center rounded-md font-semibold"
-						onClick={ () => {
-							setIdEdit( '' );
-							setOpenCreateOrEdit( true );
-						} }>
-						{ __( 'Add new' ) }
-					</button>
+                    <NavLink
+						to={ `/${
+							evm_wallet_setting?.page_slug
+						}/currencys/create/` }>
+                        <button
+    						className="ring-1 ring-black ring-opacity-5 bg-indigo-600 text-white text-sm px-4 py-2 flex items-center rounded-md font-semibold"
+    						onClick={ () => {
+    							setIdEdit( '' );
+    							setOpenCreateOrEdit( true );
+    						} }>
+    						{ __( 'Add new' ) }
+    					</button>
+                    </NavLink>
 				</div>
 			</div>
             <div className="px-8 py-4 pb-8">
