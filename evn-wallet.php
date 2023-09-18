@@ -37,6 +37,8 @@ if ( ! class_exists( 'EVM_WALLET_WP' ) ) {
 		}
 
 		public function includes(){
+			//functions
+			require_once( EVM_WALLET_DIR. '/inc/functions.php' );
 			//api
 			require_once EVM_WALLET_DIR . '/inc/api/evm-wallet-api.php';
 

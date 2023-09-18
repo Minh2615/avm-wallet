@@ -12,7 +12,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormGroup from '@mui/material/FormGroup';
 import Switch from '@mui/material/Switch';
-
+import { MediaUpload } from '@wordpress/media-utils';
 
 
 export default function CreateCurrencys() {
@@ -25,8 +25,8 @@ export default function CreateCurrencys() {
     const [minCrawl, setMinCrawl] = useState(0);
     const [minSwap, setMinSwap] = useState(0);
     const [usdRate, setUsdRate] = useState(0);
-    const [image, setImage] = useState("");
-    const [imageUpload, setImageUpload] = useState("");
+    const [imageUrl, setImageUrl] = useState("");
+    const [imageID, setImageID] = useState("");
     const [statusCurrency, setStatusCurrency] = useState(false);
     const [code, setCode] = useState("");
     const [transferFee, setTransferFee] = useState(0);
@@ -35,12 +35,6 @@ export default function CreateCurrencys() {
     const [type, setType] = useState("");
     const [transferFeeType, setTransferFeeType] = useState(0);
     const [swapFeeType, setSwapFeeType] = useState(0);
-
-    //upload image
-    function handleChangeImage(e) {
-        console.log(e.value);
-        setImage(URL.createObjectURL(e.target.files[0]));
-    }
 
     const handleCreateCurrency = async () => {
         try {
@@ -53,7 +47,7 @@ export default function CreateCurrencys() {
                     min_crawl: minCrawl,
                     min_swap: minSwap,
                     usd_rate: usdRate,
-                    image: imageUpload,
+                    image: imageID,
                     code: code,
                     transfer_fee: transferFee,
                     swap_fee: swapFee,
@@ -61,6 +55,7 @@ export default function CreateCurrencys() {
                     type: type,
                     transfer_fee_type: transferFeeType,
                     swap_fee_type: swapFeeType,
+                    statusCurrency: statusCurrency
                 },
             });
             if (response.data) {
@@ -75,7 +70,7 @@ export default function CreateCurrencys() {
 				setTimeout( () => {
 					window.location.href =
                     evm_wallet_setting?.page_settings + 'currencys/';
-				}, 1000 );
+				}, 600 );
 			}
         } catch (e) {
             setMessage(e.message);
@@ -189,16 +184,21 @@ export default function CreateCurrencys() {
                                 {__("Currency Icon",)}
                             </label>
                             <div className='basis-4/6'>
-                                { ! image && <input type="file" onChange={(e)=>{
-                                    // setImageUpload(e.target.value);
-                                    setImageUpload(URL.createObjectURL(e.target.files[0]));
-                                }} />}
-                                <img className={image && 'w-16 h-16'} src={image} />
-                                {image ?
-                                    <button className="text-sm px-4 py-2 flex items-center rounded-md font-semibold border-solid border mt-3" 
-                                        onClick={() => {
-                                            setImage("");
-                                        }}>Remove Icon</button> : ""}
+                                <img className={imageUrl && 'w-16 h-16 mb-3'} src={imageUrl} />
+                                <MediaUpload
+									onSelect={ ( media ) => {
+                                        setImageUrl(media.url);
+										setImageID( media.id );
+									} }
+									value={ '' }
+									allowedTypes={ [ 'image' ] }
+									render={ ( { open } ) => (
+										<button className="text-sm px-4 py-2 flex items-center rounded-md font-semibold border-solid border" onClick={ open }>
+											{ imageUrl ? __( 'Change image' ) : __( 'Upload a image' )}
+										</button>
+									) }
+								/>
+
                             </div>
                         </div>
                         <div className='flex flex-row justify-between items-center pb-5 mb-6'>
@@ -367,6 +367,17 @@ export default function CreateCurrencys() {
                         </div>
                     </div>
                 </div>
+                <div className="mt-3 gap-x-2">
+					{ message && (
+						<Stack
+							sx={ { width: '100%' } }
+							spacing={ 2 }>
+							<Alert severity={ status }>
+								{ message }
+							</Alert>
+						</Stack>
+					) }
+				</div>
                 <div className='mt-3 flex items-center gap-x-2'>
                     <button
                         onClick={() =>

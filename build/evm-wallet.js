@@ -25775,8 +25775,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../i18n */ "./src/components/i18n.js");
 /* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
 /* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @mui/material/TextField */ "./node_modules/@mui/material/TextField/TextField.js");
-/* harmony import */ var _mui_material_Switch__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @mui/material/Switch */ "./node_modules/@mui/material/Switch/Switch.js");
+/* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @mui/material/TextField */ "./node_modules/@mui/material/TextField/TextField.js");
+/* harmony import */ var _mui_material_Alert__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @mui/material/Alert */ "./node_modules/@mui/material/Alert/Alert.js");
+/* harmony import */ var _mui_material_Stack__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @mui/material/Stack */ "./node_modules/@mui/material/Stack/Stack.js");
+/* harmony import */ var _mui_material_Switch__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @mui/material/Switch */ "./node_modules/@mui/material/Switch/Switch.js");
+/* harmony import */ var _wordpress_media_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/media-utils */ "@wordpress/media-utils");
+/* harmony import */ var _wordpress_media_utils__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_media_utils__WEBPACK_IMPORTED_MODULE_3__);
+
 
 
 
@@ -25799,8 +25804,8 @@ function CreateCurrencys() {
   const [minCrawl, setMinCrawl] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [minSwap, setMinSwap] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [usdRate, setUsdRate] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
-  const [image, setImage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("");
-  const [imageUpload, setImageUpload] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("");
+  const [imageUrl, setImageUrl] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("");
+  const [imageID, setImageID] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("");
   const [statusCurrency, setStatusCurrency] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [code, setCode] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("");
   const [transferFee, setTransferFee] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
@@ -25809,12 +25814,6 @@ function CreateCurrencys() {
   const [type, setType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("");
   const [transferFeeType, setTransferFeeType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [swapFeeType, setSwapFeeType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
-
-  //upload image
-  function handleChangeImage(e) {
-    console.log(e.value);
-    setImage(URL.createObjectURL(e.target.files[0]));
-  }
   const handleCreateCurrency = async () => {
     try {
       setLoadingSave(true);
@@ -25826,14 +25825,15 @@ function CreateCurrencys() {
           min_crawl: minCrawl,
           min_swap: minSwap,
           usd_rate: usdRate,
-          image: imageUpload,
+          image: imageID,
           code: code,
           transfer_fee: transferFee,
           swap_fee: swapFee,
           max_swap: maxSwap,
           type: type,
           transfer_fee_type: transferFeeType,
-          swap_fee_type: swapFeeType
+          swap_fee_type: swapFeeType,
+          statusCurrency: statusCurrency
         }
       });
       if (response.data) {
@@ -25847,7 +25847,7 @@ function CreateCurrencys() {
       if (response.status == 'success') {
         setTimeout(() => {
           window.location.href = evm_wallet_setting?.page_settings + 'currencys/';
-        }, 1000);
+        }, 600);
       }
     } catch (e) {
       setMessage(e.message);
@@ -25870,7 +25870,7 @@ function CreateCurrencys() {
     className: "block text-sm font-medium text-gray-700 basis-2/6"
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Title")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "basis-4/6"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: "outlined-name",
     label: "Title",
     value: title,
@@ -25883,7 +25883,7 @@ function CreateCurrencys() {
     className: "block text-sm font-medium text-gray-700 basis-2/6"
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Min Crawl")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "basis-4/6"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: "outlined-name",
     type: "number",
     label: "Min Crawl",
@@ -25904,7 +25904,7 @@ function CreateCurrencys() {
     className: "block text-sm font-medium text-gray-700 basis-2/6"
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Min Swap")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "basis-4/6"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: "outlined-name",
     type: "number",
     label: "Min Swap",
@@ -25925,7 +25925,7 @@ function CreateCurrencys() {
     className: "block text-sm font-medium text-gray-700 basis-2/6"
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("USD Rate")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "basis-4/6"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: "outlined-name",
     type: "number",
     label: "USD Rate",
@@ -25946,28 +25946,30 @@ function CreateCurrencys() {
     className: "block text-sm font-medium text-gray-700 basis-2/6"
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Currency Icon")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "basis-4/6"
-  }, !image && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
-    type: "file",
-    onChange: e => {
-      // setImageUpload(e.target.value);
-      setImageUpload(URL.createObjectURL(e.target.files[0]));
-    }
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
-    className: image && 'w-16 h-16',
-    src: image
-  }), image ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "text-sm px-4 py-2 flex items-center rounded-md font-semibold border-solid border mt-3",
-    onClick: () => {
-      setImage("");
-    }
-  }, "Remove Icon") : "")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
+    className: imageUrl && 'w-16 h-16 mb-3',
+    src: imageUrl
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_media_utils__WEBPACK_IMPORTED_MODULE_3__.MediaUpload, {
+    onSelect: media => {
+      setImageUrl(media.url);
+      setImageID(media.id);
+    },
+    value: '',
+    allowedTypes: ['image'],
+    render: ({
+      open
+    }) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      className: "text-sm px-4 py-2 flex items-center rounded-md font-semibold border-solid border",
+      onClick: open
+    }, imageUrl ? (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change image') : (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Upload a image'))
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "flex flex-row justify-between items-center pb-5 mb-6"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: "status",
     className: "block text-sm font-medium text-gray-700 basis-2/6"
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Status")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "basis-4/6"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Switch__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Switch__WEBPACK_IMPORTED_MODULE_5__["default"], {
     checked: statusCurrency,
     onChange: () => {
       setStatusCurrency(!statusCurrency);
@@ -25984,7 +25986,7 @@ function CreateCurrencys() {
     className: "block text-sm font-medium text-gray-700 basis-2/6"
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Code")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "basis-4/6"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: "outlined-name",
     label: "Code",
     value: code,
@@ -25997,7 +25999,7 @@ function CreateCurrencys() {
     className: "block text-sm font-medium text-gray-700 basis-2/6"
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Transfer Fee")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "basis-4/6"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: "outlined-name",
     type: "number",
     label: "Transfer Fee",
@@ -26018,7 +26020,7 @@ function CreateCurrencys() {
     className: "block text-sm font-medium text-gray-700 basis-2/6"
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Swap Fee")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "basis-4/6"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: "outlined-name",
     type: "number",
     label: "Swap Fee",
@@ -26039,7 +26041,7 @@ function CreateCurrencys() {
     className: "block text-sm font-medium text-gray-700 basis-2/6"
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Max Swap")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "basis-4/6"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: "outlined-name",
     type: "number",
     label: "Max Swap",
@@ -26062,7 +26064,7 @@ function CreateCurrencys() {
     className: "block text-sm font-medium text-gray-700 basis-2/6"
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Type")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "basis-4/6"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: "outlined-name",
     label: "Type",
     value: type,
@@ -26075,7 +26077,7 @@ function CreateCurrencys() {
     className: "block text-sm font-medium text-gray-700 basis-2/6"
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Transfer Fee Type")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "basis-4/6"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: "outlined-name",
     label: "Transfer Fee Typ",
     value: transferFeeType,
@@ -26088,13 +26090,22 @@ function CreateCurrencys() {
     className: "block text-sm font-medium text-gray-700 basis-2/6"
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Swap Fee Type")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "basis-4/6"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: "outlined-name",
     label: "Swap Fee Type",
     value: swapFeeType,
     className: "hide-focus-input w-full",
     onChange: e => setSwapFeeType(e.target.value)
   }))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mt-3 gap-x-2"
+  }, message && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Stack__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    sx: {
+      width: '100%'
+    },
+    spacing: 2
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Alert__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    severity: status
+  }, message))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mt-3 flex items-center gap-x-2"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     onClick: () => handleCreateCurrency(),
@@ -26124,9 +26135,411 @@ function CreateCurrencys() {
 /*!*******************************************!*\
   !*** ./src/components/currency/detail.js ***!
   \*******************************************/
-/***/ (function() {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ DetailCurrencys; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../i18n */ "./src/components/i18n.js");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-router */ "./node_modules/react-router/dist/index.js");
+/* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @mui/material/TextField */ "./node_modules/@mui/material/TextField/TextField.js");
+/* harmony import */ var _mui_material_Alert__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @mui/material/Alert */ "./node_modules/@mui/material/Alert/Alert.js");
+/* harmony import */ var _mui_material_Stack__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @mui/material/Stack */ "./node_modules/@mui/material/Stack/Stack.js");
+/* harmony import */ var _mui_material_Switch__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @mui/material/Switch */ "./node_modules/@mui/material/Switch/Switch.js");
+/* harmony import */ var _wordpress_media_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/media-utils */ "@wordpress/media-utils");
+/* harmony import */ var _wordpress_media_utils__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_media_utils__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var swr__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! swr */ "./node_modules/swr/dist/index.mjs");
+/* harmony import */ var _skeleton__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../skeleton */ "./src/components/skeleton.js");
 
 
+
+
+
+
+
+
+
+
+
+
+function DetailCurrencys() {
+  const {
+    currencyID
+  } = (0,react_router__WEBPACK_IMPORTED_MODULE_6__.useParams)();
+  const [loadingSave, setLoadingSave] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [message, setMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("");
+  const [status, setStatus] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("success");
+  const [title, setTitle] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("");
+  const [minCrawl, setMinCrawl] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [minSwap, setMinSwap] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [usdRate, setUsdRate] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [imageUrl, setImageUrl] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("");
+  const [imageID, setImageID] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("");
+  const [statusCurrency, setStatusCurrency] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [code, setCode] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("");
+  const [transferFee, setTransferFee] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [swapFee, setSwapFee] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [maxSwap, setMaxSwap] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [type, setType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("");
+  const [transferFeeType, setTransferFeeType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [swapFeeType, setSwapFeeType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [messageData, setMessageData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)("");
+  const {
+    data
+  } = (0,swr__WEBPACK_IMPORTED_MODULE_4__["default"])('/evm-wallet/v1/currencys/get/' + currencyID, url => _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2___default()({
+    path: url
+  }));
+  const isLoading = !data;
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    try {
+      if (data?.status == 'success') {
+        const detailCurrency = data?.data;
+        setTitle(detailCurrency.title);
+        setMinCrawl(detailCurrency.min_crawl);
+        setMinSwap(detailCurrency.min_swap);
+        setUsdRate(detailCurrency.usd_rate);
+        setImageUrl(detailCurrency.image_url);
+        setImageID(detailCurrency.image_id);
+        setCode(detailCurrency.code);
+        setTransferFee(detailCurrency.transfer_fee);
+        setSwapFee(detailCurrency.swap_fee);
+        setMaxSwap(detailCurrency.max_swap);
+        setType(detailCurrency.type);
+        setTransferFeeType(detailCurrency.transfer_fee_type);
+        setSwapFeeType(detailCurrency.swap_fee_type);
+        setStatusCurrency(detailCurrency.status_currency);
+      } else {
+        setMessageData(data?.message);
+        setStatus(data?.status);
+      }
+    } catch (e) {
+      setMessageData(e.message);
+    }
+  }, [data]);
+  const handleCreateCurrency = async () => {
+    try {
+      setLoadingSave(true);
+      const response = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2___default()({
+        path: "/evm-wallet/v1/currencys/update/" + currencyID,
+        method: "POST",
+        data: {
+          title: title,
+          min_crawl: minCrawl,
+          min_swap: minSwap,
+          usd_rate: usdRate,
+          image: imageID,
+          code: code,
+          transfer_fee: transferFee,
+          swap_fee: swapFee,
+          max_swap: maxSwap,
+          type: type,
+          transfer_fee_type: transferFeeType,
+          swap_fee_type: swapFeeType,
+          statusCurrency: statusCurrency
+        }
+      });
+      if (response.data) {
+        setMessage(response.message);
+        setStatus(response?.status);
+      } else {
+        setMessage(response.message);
+        setStatus(response?.status);
+      }
+      setLoadingSave(false);
+    } catch (e) {
+      setMessage(e.message);
+    }
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "sticky top-0 z-50 bg-white flex items-center justify-between px-8 py-5 border-b"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex items-center text-xl font-bold text-gray-900"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Detail Currency"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    class: "px-8 py-5"
+  }, isLoading ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_skeleton__WEBPACK_IMPORTED_MODULE_5__["default"], null) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, !messageData ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "bg-white rounded-lg flex justify-between"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-col w-1/3\tpx-4"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center pb-5 mb-6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "title",
+    className: "block text-sm font-medium text-gray-700 basis-2/6"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Title")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "basis-4/6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    id: "outlined-name",
+    label: "Title",
+    value: title,
+    className: "hide-focus-input w-full",
+    onChange: e => setTitle(e.target.value)
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center pb-5 mb-6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "minCrawl",
+    className: "block text-sm font-medium text-gray-700 basis-2/6"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Min Crawl")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "basis-4/6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    id: "outlined-name",
+    type: "number",
+    label: "Min Crawl",
+    value: minCrawl,
+    InputProps: {
+      inputProps: {
+        max: 10,
+        min: 0.1,
+        step: 0.1
+      }
+    },
+    className: "hide-focus-input w-full",
+    onChange: e => setMinCrawl(e.target.value)
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center pb-5 mb-6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "minSwap",
+    className: "block text-sm font-medium text-gray-700 basis-2/6"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Min Swap")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "basis-4/6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    id: "outlined-name",
+    type: "number",
+    label: "Min Swap",
+    value: minSwap,
+    InputProps: {
+      inputProps: {
+        max: 100,
+        min: 1,
+        step: 1
+      }
+    },
+    className: "hide-focus-input w-full",
+    onChange: e => setMinSwap(e.target.value)
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center pb-5 mb-6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "usdrate",
+    className: "block text-sm font-medium text-gray-700 basis-2/6"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("USD Rate")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "basis-4/6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    id: "outlined-name",
+    type: "number",
+    label: "USD Rate",
+    value: usdRate,
+    InputProps: {
+      inputProps: {
+        max: 1000,
+        min: 1,
+        step: 1
+      }
+    },
+    className: "hide-focus-input w-full",
+    onChange: e => setUsdRate(e.target.value)
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center pb-5 mb-6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "image",
+    className: "block text-sm font-medium text-gray-700 basis-2/6"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Currency Icon")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "basis-4/6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
+    className: imageUrl && 'w-16 h-16 mb-3',
+    src: imageUrl
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_media_utils__WEBPACK_IMPORTED_MODULE_3__.MediaUpload, {
+    onSelect: media => {
+      setImageUrl(media.url);
+      setImageID(media.id);
+    },
+    value: '',
+    allowedTypes: ['image'],
+    render: ({
+      open
+    }) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      className: "text-sm px-4 py-2 flex items-center rounded-md font-semibold border-solid border",
+      onClick: open
+    }, imageUrl ? (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change image') : (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Upload a image'))
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center pb-5 mb-6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "status",
+    className: "block text-sm font-medium text-gray-700 basis-2/6"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Status")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "basis-4/6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Switch__WEBPACK_IMPORTED_MODULE_8__["default"], {
+    checked: statusCurrency,
+    onChange: () => {
+      setStatusCurrency(!statusCurrency);
+    },
+    inputProps: {
+      'aria-label': 'status'
+    }
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-col w-1/3\tpx-4"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center pb-5 mb-6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "code",
+    className: "block text-sm font-medium text-gray-700 basis-2/6"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Code")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "basis-4/6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    id: "outlined-name",
+    label: "Code",
+    value: code,
+    className: "hide-focus-input w-full",
+    onChange: e => setCode(e.target.value)
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center pb-5 mb-6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "transferfee",
+    className: "block text-sm font-medium text-gray-700 basis-2/6"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Transfer Fee")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "basis-4/6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    id: "outlined-name",
+    type: "number",
+    label: "Transfer Fee",
+    value: transferFee,
+    InputProps: {
+      inputProps: {
+        max: 1000,
+        min: 1,
+        step: 1
+      }
+    },
+    className: "hide-focus-input w-full",
+    onChange: e => setTransferFee(e.target.value)
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center pb-5 mb-6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "swapfee",
+    className: "block text-sm font-medium text-gray-700 basis-2/6"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Swap Fee")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "basis-4/6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    id: "outlined-name",
+    type: "number",
+    label: "Swap Fee",
+    value: swapFee,
+    InputProps: {
+      inputProps: {
+        max: 10,
+        min: 1,
+        step: 0.0001
+      }
+    },
+    className: "hide-focus-input w-full",
+    onChange: e => setSwapFee(e.target.value)
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center pb-5 mb-6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "maxswap",
+    className: "block text-sm font-medium text-gray-700 basis-2/6"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Max Swap")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "basis-4/6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    id: "outlined-name",
+    type: "number",
+    label: "Max Swap",
+    value: maxSwap,
+    InputProps: {
+      inputProps: {
+        max: 100,
+        min: 1,
+        step: 1
+      }
+    },
+    className: "hide-focus-input w-full",
+    onChange: e => setMaxSwap(e.target.value)
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-col w-1/3\tpx-4"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center pb-5 mb-6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "type",
+    className: "block text-sm font-medium text-gray-700 basis-2/6"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Type")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "basis-4/6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    id: "outlined-name",
+    label: "Type",
+    value: type,
+    className: "hide-focus-input w-full",
+    onChange: e => setType(e.target.value)
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center pb-5 mb-6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "transferfeetype",
+    className: "block text-sm font-medium text-gray-700 basis-2/6"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Transfer Fee Type")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "basis-4/6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    id: "outlined-name",
+    label: "Transfer Fee Typ",
+    value: transferFeeType,
+    className: "hide-focus-input w-full",
+    onChange: e => setTransferFeeType(e.target.value)
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "flex flex-row justify-between items-center pb-5 mb-6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "swapfeetype",
+    className: "block text-sm font-medium text-gray-700 basis-2/6"
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Swap Fee Type")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "basis-4/6"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    id: "outlined-name",
+    label: "Swap Fee Type",
+    value: swapFeeType,
+    className: "hide-focus-input w-full",
+    onChange: e => setSwapFeeType(e.target.value)
+  }))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mt-3 gap-x-2"
+  }, message && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Stack__WEBPACK_IMPORTED_MODULE_9__["default"], {
+    sx: {
+      width: '100%'
+    },
+    spacing: 2
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Alert__WEBPACK_IMPORTED_MODULE_10__["default"], {
+    severity: status
+  }, message))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mt-3 flex items-center gap-x-2"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    onClick: () => handleCreateCurrency(),
+    className: "text-[12px] uppercase text-white bg-indigo-600 rounded shadow-sm px-3 py-2 font-medium flex items-center gap-1 focus:outline-none"
+  }, loadingSave && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+    className: "animate-spin -ml-1 mr-2 h-5 w-5 text-white",
+    xmlns: "http://www.w3.org/2000/svg",
+    fill: "none",
+    viewBox: "0 0 24 24"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("circle", {
+    className: "opacity-25",
+    cx: "12",
+    cy: "12",
+    r: "10",
+    stroke: "currentColor",
+    strokeWidth: "4"
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+    className: "opacity-75",
+    fill: "currentColor",
+    d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+  })), (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Update")))) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mt-3 gap-x-2"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Stack__WEBPACK_IMPORTED_MODULE_9__["default"], {
+    sx: {
+      width: '100%'
+    },
+    spacing: 2
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Alert__WEBPACK_IMPORTED_MODULE_10__["default"], {
+    severity: status
+  }, messageData))))));
+}
 
 /***/ }),
 
@@ -26222,8 +26635,7 @@ function ListCurrencys() {
       setMessageNoData(e.message);
     }
   }, [data]);
-  const renderNewData = function (data, paged) {
-    let text = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+  const renderNewData = (data, paged, text = '') => {
     if (text !== '') {
       const newData = dataOld.filter(user => {
         return user.name.toLowerCase().includes(text.toLowerCase());
@@ -26335,7 +26747,7 @@ function ListCurrencys() {
   }, "$ ", currency.price_amount)))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
     className: "flex px-6 py-4 whitespace-nowrap text-right text-sm font-medium items-center mt-2"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_router_dom__WEBPACK_IMPORTED_MODULE_6__.NavLink, {
-    to: `/${evm_wallet_setting?.page_slug}/users/edit/${currency.id}`,
+    to: `/${evm_wallet_setting?.page_slug}/currencys/edit/${currency.id}`,
     state: {
       currencyID: currency.id
     }
@@ -26374,7 +26786,7 @@ function ListCurrencys() {
     onClose: () => setOpenDelete(false)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_DialogTitle__WEBPACK_IMPORTED_MODULE_10__["default"], {
     id: "alert-dialog-title"
-  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Delete User')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_DialogContent__WEBPACK_IMPORTED_MODULE_11__["default"], null, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Do you want to delete this users?.')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_DialogActions__WEBPACK_IMPORTED_MODULE_12__["default"], null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Button__WEBPACK_IMPORTED_MODULE_13__["default"], {
+  }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Delete Currency')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_DialogContent__WEBPACK_IMPORTED_MODULE_11__["default"], null, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Do you want to delete this Currency?.')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_DialogActions__WEBPACK_IMPORTED_MODULE_12__["default"], null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Button__WEBPACK_IMPORTED_MODULE_13__["default"], {
     onClick: () => setOpenDelete(false)
   }, (0,_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Disagree')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_mui_material_Button__WEBPACK_IMPORTED_MODULE_13__["default"], {
     onClick: () => deleteMeeting(idDelete),
@@ -26520,15 +26932,12 @@ function SideBar() {
     key: linkIndex
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_router_dom__WEBPACK_IMPORTED_MODULE_4__.NavLink, {
     to: `/${evm_wallet_setting?.page_slug}${link.to}`,
-    className: _ref => {
-      let {
-        isActive
-      } = _ref;
-      return classnames__WEBPACK_IMPORTED_MODULE_3___default()('flex items-center p-2.5 mb-1 px-4 border-l-4 font-medium transition-colors duration-200 gap-x-3 focus:outline-none', {
-        'border-indigo-600 bg-indigo-100/60 text-indigo-600 [&>*:first-child]:text-indigo-600': isActive,
-        'border-gray-100 text-gray-700 hover:text-gray-800': !isActive
-      });
-    },
+    className: ({
+      isActive
+    }) => classnames__WEBPACK_IMPORTED_MODULE_3___default()('flex items-center p-2.5 mb-1 px-4 border-l-4 font-medium transition-colors duration-200 gap-x-3 focus:outline-none', {
+      'border-indigo-600 bg-indigo-100/60 text-indigo-600 [&>*:first-child]:text-indigo-600': isActive,
+      'border-gray-100 text-gray-700 hover:text-gray-800': !isActive
+    }),
     end: link.to === '/' ? true : false
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "text-gray-400"
@@ -33502,6 +33911,17 @@ module.exports = window["wp"]["i18n"];
 
 /***/ }),
 
+/***/ "@wordpress/media-utils":
+/*!************************************!*\
+  !*** external ["wp","mediaUtils"] ***!
+  \************************************/
+/***/ (function(module) {
+
+"use strict";
+module.exports = window["wp"]["mediaUtils"];
+
+/***/ }),
+
 /***/ "./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js":
 /*!**************************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js ***!
@@ -36925,10 +37345,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_sidebar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/sidebar */ "./src/components/sidebar/index.js");
 /* harmony import */ var _components_currency__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/currency */ "./src/components/currency/index.js");
 /* harmony import */ var _components_currency_detail__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/currency/detail */ "./src/components/currency/detail.js");
-/* harmony import */ var _components_currency_detail__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_components_currency_detail__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _components_currency_create__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/currency/create */ "./src/components/currency/create.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_6__);
+
 
 
 
@@ -36959,10 +37379,10 @@ function Index() {
     element: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_currency_create__WEBPACK_IMPORTED_MODULE_5__["default"], null)
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_router_dom__WEBPACK_IMPORTED_MODULE_8__.Route, {
     path: `/${evm_wallet_setting?.page_slug}/currencys/edit/:currencyID`,
-    element: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)((_components_currency_detail__WEBPACK_IMPORTED_MODULE_4___default()), null)
+    element: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_currency_detail__WEBPACK_IMPORTED_MODULE_4__["default"], null)
   }))))))));
 }
-wp.element.render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Index, null), document.getElementById('evm-wallet-setting-root'));
+(0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Index, null), document.getElementById('evm-wallet-setting-root'));
 }();
 /******/ })()
 ;

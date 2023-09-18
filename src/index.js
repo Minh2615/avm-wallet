@@ -1,5 +1,5 @@
 import './index.scss';
-
+import { render } from '@wordpress/element';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import SideBar from './components/sidebar';
 // wallet
@@ -48,8 +48,4 @@ function Index() {
         </>
     );
 }
-
-wp.element.render(
-    <Index />,
-    document.getElementById('evm-wallet-setting-root')
-);
+render( <Index />, document.getElementById( 'evm-wallet-setting-root' ) );

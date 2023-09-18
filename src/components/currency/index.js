@@ -206,7 +206,7 @@ export default function ListCurrencys() {
                                                         <NavLink
 															to={ `/${
 																evm_wallet_setting?.page_slug
-															}/users/edit/${
+															}/currencys/edit/${
 																currency.id
 															}` }
 															state={ {
@@ -268,10 +268,10 @@ export default function ListCurrencys() {
     											setOpenDelete( false )
     										}>
     										<DialogTitle id="alert-dialog-title">
-    											{ __( 'Delete User' ) }
+    											{ __( 'Delete Currency' ) }
     										</DialogTitle>
     										<DialogContent>
-    											{ __( 'Do you want to delete this users?.' ) }
+    											{ __( 'Do you want to delete this Currency?.' ) }
     										</DialogContent>
     										<DialogActions>
     											<Button

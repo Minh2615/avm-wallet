@@ -137,7 +137,7 @@ if( ! class_exists( 'EVM_WALLET_HOOK' ) ) {
 
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 999999 );
 
-			do_action( 'learnpress/live-addon/init' );
+			do_action( 'evm-wallet/scripts/init' );
 		}
 
 		/**
@@ -159,13 +159,15 @@ if( ! class_exists( 'EVM_WALLET_HOOK' ) ) {
 		}
 
 		public function enqueue_scripts() {
-			$v_rand = uniqid();
-			if ( ! is_user_logged_in() ) {
-				return;
-			}
-	
+
+			wp_enqueue_editor(); // Support for tinymce.
+			wp_enqueue_media(); // Support for tinymce media.
+			wp_enqueue_script( 'media-audiovideo' );
+			wp_enqueue_style( 'media-views' );
+			wp_enqueue_script( 'mce-view' );
+			
 			$info = include EVM_WALLET_PLUGIN_PATH . '/build/evm-wallet.asset.php';
-			wp_enqueue_style( 'avm-wallet-setting', EVM_WALLET_URL . '/build/evm-wallet.css', array(), $info['version'], false );
+			wp_enqueue_style( 'avm-wallet-setting', EVM_WALLET_URL . '/build/evm-wallet.css', array(), $info['version'] );
 			wp_enqueue_script( 'avm-wallet-setting', EVM_WALLET_URL . '/build/evm-wallet.js', $info['dependencies'], $info['version'], true );
 	
 			wp_localize_script(
@@ -184,8 +186,12 @@ if( ! class_exists( 'EVM_WALLET_HOOK' ) ) {
 					)
 				)
 			);
-	
+			evm_wallet_tinymce_inline_scripts();
+
+			
+
 			do_action( 'evm_wallet/enqueue_scripts' );
+			
 		}
 		
 		public function template_includes( $template ) {
